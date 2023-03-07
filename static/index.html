@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+$(document).ready(function(){
+  $("#process").click(function(){
+    $.post("http://localhost:8000/", {prompt:$("#input").val()}, function(data, status){
+      $("#result").html("Response: " + data['choices'][0]['text']);
+  });
+});
+});
+</script>
+<body>
+<h1>Genzai GPT</h1>
+<p>Introduce a text to complete</p>
+<input type="text" id="input" name="input" value="Write a text">
+<button id="process" type="button">Process</button>
+<div id="result"> </div>
+</body>
+</html>
