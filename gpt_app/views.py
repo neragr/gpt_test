@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import openai
 
 # Create your views here.
-openai.api_key="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"
+openai.api_key= os.environ.get('OPENAI_API_KEY')
 
 @csrf_exempt
 def main (request):
